@@ -3,6 +3,12 @@ class HashMap:
     def __init__(self, size=16):
         self.hashmap = [[] for _ in range(size)]
 
+    def __getitem__(self, item):
+        self.get(item)
+
+    def __setitem__(self, key, value):
+        self.put(key, value)
+
     def put(self, key, value):
         hash_key = hash(key) % len(self.hashmap)
         bucket = self.hashmap[hash_key]
@@ -33,6 +39,8 @@ if __name__ == '__main__':
     hashmap = HashMap()
     hashmap.put('key1', 'value1')
     hashmap.put('key2', 'value2')
+    hashmap['key3'] = 'value3'
 
     print(hashmap.get('key1'))  # should print 'value1'
-    print(hashmap.get('key3'))  # should encounter KeyError
+    print(hashmap.get('key3'))  # should print 'value3'
+    print(hashmap.get('key4'))  # should encounter KeyError
