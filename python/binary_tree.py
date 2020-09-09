@@ -44,6 +44,42 @@ class Tree:
         else:
             return self._find(node.right, value)
 
+    @staticmethod
+    def min_node(node):
+        current = node
+        while current is not None and current.left is not None:
+            current = current.left
+        return current
+
+    def remove(self, value):
+        if self.root is None:
+            return
+        if self.root.value == value:
+            self.root = None
+            return
+        return self._remove(self.root, value)
+
+    def _remove(self, node, value):
+        if node is None:
+            return
+        if value < node.value:
+            node.left = self._remove(node.left, value)
+        elif value > node.value:
+            node.right = self._remove(node.right, value)
+        else:
+            if node.left is None:
+                temp = node.right
+                node = None
+                return temp
+            elif node.right is None:
+                temp = node.left
+                node = None
+                return temp
+            temp = Tree.min_node(node.right)
+            node.value = temp.value
+            node.right = self._remove(node.right, temp.value)
+        return node
+
     def __del__(self):
         self.root = None
         print(f'Tree deleted.')
@@ -75,5 +111,8 @@ if __name__ == '__main__':
     # print(tree.find(2).value)
     # print(tree.find(-4).value)
     print(tree)
-    del tree
+    print()
+
+    tree.remove(0)
+    print(tree)
     # print(tree)
