@@ -54,9 +54,6 @@ class Tree:
     def remove(self, value):
         if self.root is None:
             return
-        if self.root.value == value:
-            self.root = None
-            return
         return self._remove(self.root, value)
 
     def _remove(self, node, value):
@@ -67,17 +64,16 @@ class Tree:
         elif value > node.value:
             node.right = self._remove(node.right, value)
         else:
-            if node.left is None:
-                temp = node.right
+            if node.left is None and node.right is None:
                 node = None
-                return temp
+            elif node.left is None:
+                node = node.right
             elif node.right is None:
-                temp = node.left
-                node = None
-                return temp
-            temp = Tree.min_node(node.right)
-            node.value = temp.value
-            node.right = self._remove(node.right, temp.value)
+                node = node.left
+            else:
+                temp = Tree.min_node(node.right)
+                node.value = temp.value
+                node.right = self._remove(node.right, temp.value)
         return node
 
     def __del__(self):
@@ -113,6 +109,6 @@ if __name__ == '__main__':
     print(tree)
     print()
 
-    tree.remove(0)
+    tree.remove(5)
     print(tree)
     # print(tree)
