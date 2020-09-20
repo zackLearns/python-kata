@@ -5,12 +5,21 @@ class Node:
         self.right = None
         self.value = value
 
+    def __str__(self):
+        return f'{self.value}'
 
 class Tree:
 
     def __init__(self):
         """A tree only has a root attribute with type Node."""
         self.root = None
+
+    @staticmethod
+    def min_node(node):
+        current = node
+        while current is not None and current.left is not None:
+            current = current.left
+        return current
 
     def add(self, value):
         if self.root is None:
@@ -39,22 +48,14 @@ class Tree:
     def _find(self, node, value):
         if value == node.value:
             return node
-        if value < node.value:
+        if value < node.value and node.left is not None:
             return self._find(node.left, value)
-        else:
+        elif value > node.value and node.right is not None:
             return self._find(node.right, value)
 
-    @staticmethod
-    def min_node(node):
-        current = node
-        while current is not None and current.left is not None:
-            current = current.left
-        return current
-
     def remove(self, value):
-        if self.root is None:
-            return
-        return self._remove(self.root, value)
+        if self.root is not None:
+            return self._remove(self.root, value)
 
     def _remove(self, node, value):
         if node is None:
@@ -104,11 +105,12 @@ if __name__ == '__main__':
     tree.add(0)
     tree.add(9)
 
-    # print(tree.find(2).value)
-    # print(tree.find(-4).value)
-    print(tree)
-    print()
+    print(tree.find(2))
+    print(tree.find(6))
+    print(tree.find(-4))
+    # print(tree)
+    # print()
 
-    tree.remove(5)
-    print(tree)
+    # tree.remove(5)
+    # print(tree)
     # print(tree)
