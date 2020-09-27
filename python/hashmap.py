@@ -42,6 +42,7 @@ class HashMap:
                 hash_key = hash(key) % new_size
                 new_bucket = new_hashmap[hash_key]
                 new_bucket.append((key, value))
+        print(f'Increasing hashmap size from {self.size} to {new_size}')
         self.size = new_size
         self.hashmap = new_hashmap
 
@@ -77,10 +78,10 @@ class HashMap:
 
 
 if __name__ == '__main__':
-    hashmap = HashMap()
+    hashmap = HashMap(size=2)
     hashmap[1] = 'one'
     hashmap[2] = 'two'
-    hashmap[3] = 'three'
+    hashmap[3] = 'three'  # should increase size from 2 to 4
     hashmap[1] = 'new one'
 
     print(hashmap[1])  # should print 'new one'
