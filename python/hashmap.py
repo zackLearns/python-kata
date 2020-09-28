@@ -18,21 +18,18 @@ class HashMap:
     def put(self, key, value):
         hash_key = hash(key) % self.size
         bucket = self.hashmap[hash_key]
-        key_exists = False
-        key_index = -1
+        bucket_index = -1
         for index, pair in enumerate(bucket):
             current_key, current_value = pair
             if current_key == key:
-                key_exists = True
-                key_index = index
-        if key_exists:
-            key_index = key_index if key_index != -1 else 0
-            bucket[key_index] = (key,value)
-        else:
+                bucket_index = index
+        if bucket_index == -1:
             bucket.append((key, value))
             self.num_keys += 1
             if self.num_keys >= self.size:
                 self._rehash_keys()
+        else:
+            bucket[bucket_index] = (key, value)
 
     def _rehash_keys(self):
         new_size = self.size * 2
@@ -83,7 +80,7 @@ if __name__ == '__main__':
     hashmap[2] = 'two'
     hashmap[3] = 'three'  # should increase size from 2 to 4
     hashmap[1] = 'new one'
-
+    print(hashmap)
     print(hashmap[1])  # should print 'new one'
     print(hashmap[2])  # should print 'two'
     print(hashmap[3])  # should print 'three'
