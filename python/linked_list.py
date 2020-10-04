@@ -21,7 +21,7 @@ class LinkedList:
         self.add_to_index(index, value)
 
     def __delitem__(self, index):
-        self.remove(index)
+        self.remove_by_index(index)
 
     def get(self, index):
         if index >= self.size:
@@ -80,7 +80,7 @@ class LinkedList:
         node.next = new_node
         self.size += 1
 
-    def remove(self, index):
+    def remove_by_index(self, index):
         if index >= self.size:
             raise ValueError(f'Unable to remove index {index} from LinkedList with size {self.size}')
         if self.head is None:
@@ -96,6 +96,21 @@ class LinkedList:
                 previous_node.next = current_node.next
                 return
             current_index += 1
+            previous_node = current_node
+            current_node = current_node.next
+
+    def remove_by_value(self, value):
+        if self.head is None:
+            raise Exception(f'Cannot remove value {value} from an empty LinkedList')
+        if self.head.value == value:
+            self.head = self.head.next
+            return
+        previous_node = self.head
+        current_node = self.head.next
+        while current_node.next is not None:
+            if current_node.value == value:
+                previous_node.next = current_node.next
+                return
             previous_node = current_node
             current_node = current_node.next
 
@@ -125,3 +140,6 @@ if __name__ == '__main__':
 
     del numbers[2]
     print(f'{numbers}\n')  # 12, 0, 10, 30, 7, 20
+
+    numbers.remove_by_value(7)
+    print(f'{numbers}\n')
