@@ -64,6 +64,7 @@ class LinkedList:
         new_node = Node(value)
         if self.head is None:
             self.head = new_node
+            self.size += 1
             return
         new_node.next = self.head
         self.head = new_node
@@ -73,6 +74,7 @@ class LinkedList:
         new_node = Node(value)
         if self.head is None:
             self.head = new_node
+            self.size += 1
             return
         node = self.head
         while node.next is not None:
@@ -94,6 +96,7 @@ class LinkedList:
         while current_node.next is not None:
             if current_index == index:
                 previous_node.next = current_node.next
+                self.size -= 1
                 return
             current_index += 1
             previous_node = current_node
@@ -110,6 +113,7 @@ class LinkedList:
         while current_node.next is not None:
             if current_node.value == value:
                 previous_node.next = current_node.next
+                self.size -= 1
                 return
             previous_node = current_node
             current_node = current_node.next
@@ -138,8 +142,10 @@ if __name__ == '__main__':
     numbers[0] = 12
     print(f'{numbers}\n')  # 12, 0, -18, 10, 30, 7, 20
 
+    print(f'Before deleting size: {numbers.size}')  # 7
     del numbers[2]
-    print(f'{numbers}\n')  # 12, 0, 10, 30, 7, 20
+    print(f'{numbers}')  # 12, 0, 10, 30, 7, 20
+    print(f'After deleting size: {numbers.size}\n')  # 6
 
     numbers.remove_by_value(7)
     print(f'{numbers}\n')
