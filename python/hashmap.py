@@ -13,7 +13,6 @@ class HashMap:
 
     def __delitem__(self, key):
         self.remove(key)
-        print(f'Deleted key {key} from hashmap.')
 
     def put(self, key, value):
         hash_key = hash(key) % self.size
@@ -26,45 +25,58 @@ class HashMap:
         if bucket_index == -1:
             bucket.append((key, value))
             self.num_keys += 1
-            if self.num_keys >= self.size:
-                self._rehash_keys()
+            self._rehash_upsize()
         else:
             bucket[bucket_index] = (key, value)
 
-    def _rehash_keys(self):
+    def _rehash_upsize(self):
+        if self.num_keys < self.size:
+            return
         new_size = self.size * 2
         new_hashmap = [[] for _ in range(new_size)]
         for bucket in self.hashmap:
             for key, value in bucket:
-                hash_key = hash(key) % new_size
-                new_bucket = new_hashmap[hash_key]
+                new_hash_key = hash(key) % new_size
+                new_bucket = new_hashmap[new_hash_key]
                 new_bucket.append((key, value))
-        print(f'Increasing hashmap size from {self.size} to {new_size}')
         self.size = new_size
         self.hashmap = new_hashmap
 
     def get(self, key):
         hash_key = hash(key) % self.size
         bucket = self.hashmap[hash_key]
-        for index, pair in enumerate(bucket):
-            current_key, current_value = pair
+        for current_key, current_value in bucket:
             if current_key == key:
                 return current_value
-        raise KeyError(f'HashMap has no entry with key: {key!r}')
+        raise KeyError(f'Cannot retrieve with key {key} as key not found.')
 
     def remove(self, key):
         hash_key = hash(key) % self.size
         bucket = self.hashmap[hash_key]
-        bucket_index_to_del = -1
+        bucket_index = -1
         for index, pair in enumerate(bucket):
-            current_key, _ = pair
+            current_key, current_value = pair
             if current_key == key:
-                bucket_index_to_del = index
-                break
-        if bucket_index_to_del == -1:
-            raise KeyError(f'No existing key {key!r} in hashmap to remove.')
+                bucket_index = index
+        if bucket_index == -1:
+            raise KeyError(f'Cannot remove with key {key} as key not found.')
         else:
-            del bucket[bucket_index_to_del]
+            del bucket[bucket_index]
+            self.num_keys -= 1
+            self._rehash_downsize()
+
+    def _rehash_downsize(self):
+        if self.num_keys > self.size // 4:
+            return
+        new_size = self.size // 4
+        new_hashmap = [[] for _ in range(new_size)]
+        for bucket in self.hashmap:
+            for key, value in bucket:
+                new_hash_key = hash(key) % new_size
+                new_bucket = new_hashmap[new_hash_key]
+                new_bucket.append((key, value))
+        self.size = new_size
+        self.hashmap = new_hashmap
 
     def __str__(self):
         to_return = ''
@@ -77,22 +89,23 @@ class HashMap:
 if __name__ == '__main__':
     hashmap = HashMap(size=2)
     hashmap[1] = 'one'
+    print(f'Expected size 2: {hashmap.size}')
+
     hashmap[2] = 'two'
-    hashmap[3] = 'three'  # should increase size from 2 to 4
+    print(f'Expected size 4: {hashmap.size}')
+
+    hashmap[3] = 'three'
     hashmap[1] = 'new one'
+
+    print()
     print(hashmap)
-    print(hashmap[1])  # should print 'new one'
-    print(hashmap[2])  # should print 'two'
-    print(hashmap[3])  # should print 'three'
-    try:
-        print(hashmap[4])  # should encounter KeyError
-    except KeyError as e:
-        print(f"Accessing hashmap with key '4' encountered KeyError as expected.")
+
+    print(f"Expected to print 'two': {hashmap[2]}")
 
     del hashmap[2]
-    try:
-        print(hashmap[2])
-    except KeyError as e:
-        print(f"Accessing hashmap with key '2' after it is deleted encountered KeyError as expected.")
+    del hashmap[3]
 
+    print(f'Expected size 1: {hashmap.size}')
+
+    print()
     print(hashmap)
