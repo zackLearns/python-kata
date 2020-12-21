@@ -1,5 +1,5 @@
 """
-URKL: https://leetcode.com/problems/design-hit-counter/
+URL: https://leetcode.com/problems/design-hit-counter/
 """
 
 
